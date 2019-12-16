@@ -1,11 +1,14 @@
 package partie_1.Metier;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Catalogue implements I_Catalogue{
 	private  List<I_Produit>lesProduits;
 
-	public Catalogue() {	}
+	public Catalogue() {	
+		lesProduits = new ArrayList<I_Produit>();
+	}
 	
 	@Override
 	public boolean addProduit(I_Produit produit) {
@@ -35,7 +38,7 @@ public class Catalogue implements I_Catalogue{
 	public int addProduits(List<I_Produit> l) {
 		// TODO Auto-generated method stub
 		int i =0; 
-		while(l.get(i)!=null && !isPresent(l.get(i).getNom())) {
+		while(i<l.size() && !isPresent(l.get(i).getNom())) {
 			Produit curProduit = new Produit (l.get(i).getNom(),l.get(i).getQuantite(),l.get(i).getPrixUnitaireHT());
 			lesProduits.add(curProduit);
 			i++;
@@ -47,11 +50,12 @@ public class Catalogue implements I_Catalogue{
 	public boolean removeProduit(String nom) {
 		boolean isPresent=false;
 		int i=0;
-		while (lesProduits.get(i)!=null && !isPresent) {
+		while (i<lesProduits.size() && !isPresent) {
 			if (lesProduits.get(i).getNom()==nom) {
 				lesProduits.remove(i);
 				isPresent=true;
 			}
+			i++;
 		}
 		return isPresent;
 	
@@ -61,11 +65,12 @@ public class Catalogue implements I_Catalogue{
 	public boolean acheterStock(String nomProduit, int qteAchetee) {
 		boolean isPresent=false;
 		int i=0;
-		while (lesProduits.get(i)!=null && !isPresent) {
+		while (i<lesProduits.size() && !isPresent) {
 			if (lesProduits.get(i).getNom()==nomProduit) {
 				lesProduits.get(i).ajouter(qteAchetee);
 				isPresent=true;
 			}
+			i++;
 		}
 		return isPresent;
 	
@@ -74,14 +79,16 @@ public class Catalogue implements I_Catalogue{
 	@Override
 	public boolean vendreStock(String nomProduit, int qteVendue) {
 		boolean isPresent=false;
+		boolean isSold=false;
 		int i=0;
-		while (lesProduits.get(i)!=null && !isPresent) {
+		while (i<lesProduits.size()&& !isPresent) {
 			if (lesProduits.get(i).getNom()==nomProduit) {
-				lesProduits.get(i).enlever(qteVendue);
+				isSold=lesProduits.get(i).enlever(qteVendue);
 				isPresent=true;
 			}
+			i++;
 		}
-		return isPresent;
+		return isSold;
 	}
 
 	@Override
@@ -94,8 +101,9 @@ public class Catalogue implements I_Catalogue{
 	public double getMontantTotalTTC() {
 		double montantTotal=0;
 		int i =0;
-		while (lesProduits.get(i)!=null) {
-			montantTotal+=lesProduits.get(i).getPrixUnitaireTTC();
+		while (i<lesProduits.size()) {
+			montantTotal+=(lesProduits.get(i).getPrixUnitaireTTC())*lesProduits.get(i).getQuantite();
+			i++;
 		}
 		return montantTotal;
 	}
@@ -108,13 +116,25 @@ public class Catalogue implements I_Catalogue{
 	public boolean isPresent(String nom) {
 		boolean isPresent=false;
 		int i=0;
-		while(lesProduits.get(i)!=null&&!isPresent) {
+		while(i<lesProduits.size()&&!isPresent) {
 			if (lesProduits.get(i).getNom()==nom) {
 				isPresent=true;
 			}
 			i++;
 		}
 		return isPresent;
+	}
+	
+	public String toString() {
+		int i=0;
+		String out = "";
+		while(i<lesProduits.size()) {
+		
+			out += lesProduits.get(i).getNom()+" - prix HT : "+lesProduits.get(i).getPrixUnitaireHT()+ " € - prix TTC : "+lesProduits.get(i).getPrixUnitaireTTC()+" € - quantité en stock : "+lesProduits.get(i).getQuantite()+"\n";
+			i++;
+		}
+		out+="\nMontant total TTC du stock : "+ getMontantTotalTTC()+ " €";
+			return out;
 	}
 	
 }

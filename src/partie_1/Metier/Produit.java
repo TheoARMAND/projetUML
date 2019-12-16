@@ -27,7 +27,7 @@ public class Produit implements  I_Produit{
 
 	@Override
 	public boolean enlever(int qteVendue) {
-		if (qteVendue<=0|| qteVendue<this.quantiteStock)
+		if (qteVendue<=0|| qteVendue>this.quantiteStock)
 			return false;
 		else {
 			this.quantiteStock-=qteVendue;
